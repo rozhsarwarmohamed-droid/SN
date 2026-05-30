@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, viewport-fit=cover">
+<title>Cambridge Primary Science 3 – Unit 1: Plants Are Living Things</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --leaf:       #2e7d32;
+  --leaf-mid:   #43a047;
+  --leaf-light: #81c784;
+  --leaf-pale:  #e8f5e9;
+  --sun:        #f9a825;
+  --sun-light:  #fff9c4;
+  --sky:        #0288d1;
+  --sky-light:  #e1f5fe;
+  --soil:       #6d4c41;
+  --flower:     #d81b60;
+  --flower-lt:  #fce4ec;
+  --correct:    #2e7d32;
+  --wrong:      #c62828;
+  --selected:   #e65100;
+  --bg:         #f1f8f0;
+  --white:      #ffffff;
+  --text:       #1b3a23;
+  --gold:       #f9a825;
+  --radius:     20px;
+  --shadow:     0 6px 28px rgba(0,0,0,0.12);
+  --shadow-sm:  0 3px 12px rgba(0,0,0,0.09);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  margin: 0; padding: 0;
+}
+
+html {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  width: 100vw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 8% 18%, rgba(129,199,132,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 350px at 88% 78%, rgba(249,168,37,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 500px at 58% 8%,  rgba(2,136,209,0.07) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── TOP BAR ── */
+#topbar {
+  background: linear-gradient(135deg, var(--leaf) 0%, var(--leaf-mid) 100%);
+  color: white;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 18px; flex-shrink: 0;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+  z-index: 20; position: relative; gap: 12px;
+}
+#topbar-left { display: flex; align-items: center; gap: 10px; }
+.unit-badge {
+  background: var(--sun); color: var(--text);
+  font-weight: 900; font-size: 12px;
+  padding: 4px 12px; border-radius: 20px; white-space: nowrap;
+}
+#topbar h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: clamp(13px, 2.4vw, 21px); font-weight: 800;
+  flex: 1; text-align: center;
+}
+#topbar-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.score-badge {
+  background: rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 20px; padding: 4px 14px;
+  font-weight: 900; font-size: 14px;
+  display: flex; align-items: center; gap: 5px;
+  transition: transform 0.2s;
+}
+.score-num { font-size: 17px; color: var(--sun-light); }
+#progress-bar-wrap {
+  width: 120px; height: 8px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 8px; overflow: hidden;
+}
+#progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sun-light), var(--sun));
+  border-radius: 8px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  width: 0%;
+}
+#menu-btn {
+  background: rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 12px; color: white;
+  width: 48px; height: 48px; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s; flex-shrink: 0;
+  touch-action: manipulation;
+}
+#menu-btn:active { background: rgba(255,255,255,0.35); transform: scale(0.92); }
+
+/* ── SLIDE MENU ── */
+#slide-menu {
+  position: fixed; top: 0; right: -320px;
+  width: 300px; height: 100dvh;
+  background: white;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.25);
+  z-index: 100;
+  transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+  overflow-y: scroll; padding: 20px 16px;
+  -webkit-overflow-scrolling: touch;
+}
+#slide-menu.open { right: 0; }
+#slide-menu h2 {
+  font-family: 'Baloo 2', cursive; font-size: 20px; color: var(--leaf);
+  margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;
+}
+#menu-close {
+  background: var(--leaf-pale); border: none; border-radius: 10px;
+  color: var(--leaf); font-size: 20px; width: 48px; height: 48px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation;
+}
+#menu-close:active { transform: scale(0.88); }
+.menu-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 14px; cursor: pointer;
+  transition: background 0.12s; margin-bottom: 6px;
+  border: 2px solid transparent;
+  min-height: 56px; touch-action: manipulation;
+}
+.menu-item:active { background: var(--leaf-pale); transform: scale(0.97); }
+.menu-item.current { background: var(--leaf-pale); border-color: var(--leaf-mid); }
+.menu-item .m-num {
+  min-width: 30px; height: 30px; border-radius: 10px;
+  background: var(--leaf); color: white; font-weight: 900; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+.menu-item .m-title { font-weight: 700; font-size: 14px; color: var(--text); line-height: 1.3; }
+
+/* ── OVERLAY ── */
+#overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 99; display: none; backdrop-filter: blur(2px);
+}
+#overlay.show { display: block; }
+
+/* ── SLIDE AREA ── */
+#slide-area { flex: 1; overflow: hidden; position: relative; z-index: 1; min-height: 0; }
+
+.slide {
+  position: absolute; inset: 0;
+  display: none; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding: 16px 22px 100px;
+  overflow-y: scroll; overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+  touch-action: pan-y;
+}
+.slide.active {
+  display: flex;
+  animation: slideIn 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.slide.slide-back { animation: slideInBack 0.3s cubic-bezier(0.4,0,0.2,1); }
+@keyframes slideIn     { from { opacity:0; transform:translateX(30px); }  to { opacity:1; transform:translateX(0); } }
+@keyframes slideInBack { from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:translateX(0); } }
+
+.slide-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: clamp(20px, 3.8vw, 34px); font-weight: 800;
+  color: var(--leaf); text-align: center;
+  margin-bottom: 3px; line-height: 1.2;
+}
+.slide-subtitle {
+  font-size: clamp(12px, 1.7vw, 15px); color: var(--soil);
+  text-align: center; margin-bottom: 14px; font-weight: 600; opacity: 0.85;
+}
+
+/* ── BOTTOM NAV ── */
+#bottomnav {
+  background: white; border-top: 2px solid #e8f0e8;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 18px; flex-shrink: 0; gap: 10px;
+  box-shadow: 0 -3px 14px rgba(0,0,0,0.07);
+  z-index: 10; position: relative;
+}
+.nav-btn {
+  min-width: 80px; min-height: 52px; border: none; border-radius: 16px;
+  font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 15px;
+  cursor: pointer; transition: transform 0.12s, box-shadow 0.12s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  touch-action: manipulation;
+}
+.nav-btn:active { transform: scale(0.91); }
+#btn-prev { background: #f0f0f0; color: #555; border: 2px solid #ddd; }
+#btn-next {
+  background: linear-gradient(135deg, var(--leaf-mid), var(--leaf));
+  color: white; box-shadow: 0 5px 16px rgba(46,125,50,0.35);
+}
+#slide-counter { font-size: 14px; font-weight: 800; color: #888; text-align: center; flex: 1; }
+
+/* ── INFO CARD ── */
+.info-card {
+  background: white; border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 18px 22px;
+  width: 100%; max-width: 760px; margin-bottom: 14px;
+  border-left: 5px solid var(--leaf-mid);
+}
+.info-card h3 {
+  font-family: 'Baloo 2', cursive; font-size: clamp(15px,2.3vw,21px);
+  color: var(--leaf); margin-bottom: 10px; font-weight: 800;
+}
+.info-card p, .info-card li {
+  font-size: clamp(13px,1.8vw,15px); line-height: 1.65; color: var(--text);
+}
+.info-card ul { padding-left: 20px; }
+.info-card li { margin-bottom: 5px; }
+.highlight   { color: var(--leaf); font-weight: 900; }
+.highlight-r { color: var(--wrong); font-weight: 900; }
+
+/* ── LIFE PROCESSES ── */
+.needs-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr));
+  gap: 10px; width: 100%; max-width: 700px;
+}
+.need-card {
+  background: white; border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); padding: 14px 10px;
+  text-align: center; border: 3px solid transparent;
+  transition: transform 0.18s;
+}
+.need-card.need-yes { border-color: var(--leaf-mid); background: var(--leaf-pale); }
+.need-card .n-emoji { font-size: 2.2em; display: block; margin-bottom: 6px; }
+.need-card .n-label { font-weight: 800; font-size: 12px; }
+
+/* ── VOCAB GRID ── */
+.vocab-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(148px,1fr));
+  gap: 12px; width: 100%; max-width: 800px;
+}
+.vocab-card {
+  background: white; border-radius: 16px; box-shadow: var(--shadow-sm);
+  padding: 16px 12px; text-align: center; cursor: pointer;
+  transition: transform 0.15s; border: 3px solid transparent;
+  position: relative; overflow: hidden;
+  touch-action: manipulation;
+}
+.vocab-card::after {
+  content: 'Tap to reveal'; position: absolute; bottom: 5px; right: 7px;
+  font-size: 9px; color: #bbb; font-weight: 700;
+}
+.vocab-card:active { transform: scale(0.91); }
+.vocab-card .v-emoji { font-size: 2.3em; display: block; margin-bottom: 6px; }
+.vocab-card .v-word  { font-weight: 900; font-size: 15px; color: var(--leaf); }
+.vocab-card .v-def   { font-size: 12px; color: #555; margin-top: 6px; display: none; line-height: 1.45; }
+.vocab-card.flipped  {
+  background: linear-gradient(135deg, var(--leaf-pale), #d7f0d8);
+  border-color: var(--leaf-mid); transform: scale(1.03);
+}
+.vocab-card.flipped::after { display: none; }
+.vocab-card.flipped .v-def { display: block; }
+
+/* ── QUIZ ── */
+.quiz-wrap { width: 100%; max-width: 720px; }
+.quiz-question {
+  background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 18px 22px; margin-bottom: 14px; border-top: 4px solid var(--leaf-mid);
+}
+.q-num { font-size: 11px; font-weight: 800; color: var(--leaf-mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+.q-text { font-size: clamp(14px,2vw,18px); font-weight: 700; color: var(--text); margin-bottom: 14px; line-height: 1.45; }
+.q-emoji { font-size: 1.5em; margin-right: 8px; }
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.opt-btn {
+  min-height: 62px; border-radius: 14px; border: 3px solid #e0e0e0;
+  background: #fafafa; font-family: 'Nunito', sans-serif;
+  font-size: clamp(12px,1.7vw,15px); font-weight: 700;
+  cursor: pointer; padding: 10px 12px; transition: all 0.14s; line-height: 1.35; text-align: center;
+  touch-action: manipulation;
+}
+.opt-btn:active { transform: scale(0.93); }
+.opt-btn.correct { background: #e8f5e9; border-color: var(--correct); color: var(--correct); }
+.opt-btn.wrong   { background: #ffebee; border-color: var(--wrong);   color: var(--wrong); }
+.opt-btn:disabled { cursor: default; }
+.q-feedback { margin-top: 10px; font-size: 14px; font-weight: 800; min-height: 22px; text-align: center; }
+.q-feedback.ok  { color: var(--correct); }
+.q-feedback.bad { color: var(--wrong); }
+
+/* ── SORT GAME ── */
+.sort-container { width: 100%; max-width: 740px; }
+.sort-instruction {
+  background: var(--sun-light); border-radius: 14px; padding: 10px 16px;
+  font-size: 13px; font-weight: 700; color: var(--soil);
+  margin-bottom: 12px; text-align: center; border: 2px solid var(--sun);
+}
+.sort-items-row {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center; margin-bottom: 16px; min-height: 70px;
+}
+.sort-item {
+  min-width: 78px; min-height: 68px; border-radius: 16px;
+  background: white; border: 3px solid #ddd;
+  font-weight: 800; font-size: 15px; cursor: pointer;
+  transition: all 0.14s; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 8px 10px; gap: 3px;
+  touch-action: manipulation;
+}
+.sort-item span.lbl { font-size: 10px; font-weight: 800; color: #777; }
+.sort-item:active { transform: scale(0.90); }
+.sort-item.selected {
+  border-color: var(--selected); background: #fff3e0;
+  transform: scale(1.08); box-shadow: 0 4px 16px rgba(230,81,0,0.30);
+}
+.sort-item.placed { opacity: 0.22; pointer-events: none; }
+.sort-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.sort-zone {
+  background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 14px; min-height: 120px; border: 3px solid #e0e0e0;
+  transition: border-color 0.15s, transform 0.15s; cursor: pointer;
+  touch-action: manipulation;
+}
+.sort-zone:active { transform: scale(0.97); }
+.sort-zone.zone-alive { border-color: var(--leaf-mid); }
+.sort-zone.zone-not   { border-color: var(--wrong); }
+.sort-zone h4 {
+  font-family: 'Baloo 2', cursive; font-size: 17px; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.zone-alive h4 { color: var(--leaf); }
+.zone-not h4   { color: var(--wrong); }
+.sort-zone .placed-items { display: flex; flex-wrap: wrap; gap: 7px; }
+.placed-chip {
+  border-radius: 20px; padding: 8px 14px;
+  font-size: 13px; font-weight: 800;
+  cursor: pointer; transition: all 0.12s; border: 2px solid transparent;
+  min-height: 44px; display: inline-flex; align-items: center;
+  touch-action: manipulation;
+}
+.placed-chip:active { transform: scale(0.85); }
+.placed-chip.alive-chip { background: #e8f5e9; color: var(--leaf);  border-color: var(--leaf-light); }
+.placed-chip.not-chip   { background: #ffebee; color: var(--wrong); border-color: #ef9a9a; }
+.placed-chip.wrong-placed { background: #ffebee; color: var(--wrong); border-color: var(--wrong); }
+.sort-result { text-align: center; margin-top: 12px; font-size: 16px; font-weight: 900; }
+
+/* ── PLANT LABEL ── */
+.plant-label-wrap { position: relative; width: 100%; max-width: 480px; margin: 0 auto; }
+.plant-svg-container { width: 100%; aspect-ratio: 1/1.2; position: relative; }
+.plant-svg-container svg { width: 100%; height: 100%; }
+.label-targets { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 12px; }
+.label-chip {
+  min-height: 52px; min-width: 96px; border-radius: 26px;
+  background: var(--sun-light); color: var(--text);
+  font-weight: 900; font-size: 14px; cursor: pointer;
+  border: 3px solid var(--sun); padding: 8px 18px;
+  transition: all 0.15s; text-align: center;
+  touch-action: manipulation;
+}
+.label-chip:active { transform: scale(0.88); }
+.label-chip.selected {
+  background: var(--selected); border-color: var(--selected);
+  color: white; transform: scale(1.1);
+  box-shadow: 0 4px 14px rgba(230,81,0,0.3);
+}
+.label-chip.used { opacity: 0.22; pointer-events: none; }
+.part-hotspot {
+  position: absolute; width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(255,255,255,0.85); border: 3px dashed var(--leaf-mid);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 900; color: var(--leaf);
+  text-align: center; line-height: 1.2; transition: all 0.2s;
+  transform: translate(-50%,-50%); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  touch-action: manipulation;
+}
+.part-hotspot:active { transform: translate(-50%,-50%) scale(0.88); }
+.part-hotspot.filled { background: var(--leaf); border: 3px solid var(--leaf); color: white; font-size: 10px; }
+.part-hotspot.correct-anim { animation: hotspotPop 0.45s ease; }
+@keyframes hotspotPop {
+  0%   { transform: translate(-50%,-50%) scale(1); }
+  40%  { transform: translate(-50%,-50%) scale(1.4); }
+  100% { transform: translate(-50%,-50%) scale(1); }
+}
+.part-hotspot.wrong-hs { background: #ffebee; border-color: var(--wrong); }
+
+/* ── PARTS TABLE ── */
+.parts-table { width: 100%; max-width: 740px; }
+.part-row {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: white; border-radius: 16px; box-shadow: var(--shadow-sm);
+  padding: 16px 18px; margin-bottom: 10px;
+  border-left: 5px solid var(--leaf-mid);
+}
+.part-row .p-icon { font-size: 2.2em; flex-shrink: 0; }
+.part-row h4 { font-family: 'Baloo 2', cursive; font-size: 17px; color: var(--leaf); font-weight: 800; margin-bottom: 4px; }
+.part-row p  { font-size: clamp(13px,1.8vw,15px); line-height: 1.55; color: var(--text); }
+
+/* ── MATCH GAME ── */
+.match-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 680px; }
+.match-col  { display: flex; flex-direction: column; gap: 9px; }
+.match-col h4 { font-family: 'Baloo 2', cursive; font-size: 16px; color: var(--leaf); text-align: center; margin-bottom: 3px; }
+.match-item {
+  min-height: 60px; border-radius: 14px; background: white; border: 3px solid #ddd;
+  font-weight: 700; font-size: 13px; cursor: pointer; padding: 10px 14px;
+  text-align: center; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; line-height: 1.3;
+  touch-action: manipulation;
+}
+.match-item:active { transform: scale(0.91); }
+.match-item.selected { border-color: var(--selected); background: #fff3e0; color: var(--selected); transform: scale(1.05); }
+.match-item.matched  { border-color: var(--correct); background: #e8f5e9; color: var(--correct); pointer-events: none; }
+.match-item.wrong-flash { border-color: var(--wrong); background: #ffebee; animation: shake 0.3s ease; }
+
+/* ── FILL-IN-BLANK ── */
+.fill-wrap { width: 100%; max-width: 700px; }
+.fill-q {
+  background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--sky);
+}
+.fill-sentence { font-size: clamp(14px,2vw,17px); font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.7; }
+.blank-zone {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 120px; height: 44px; border-bottom: 3px solid var(--leaf-mid);
+  background: #f9fbe7; vertical-align: bottom; cursor: pointer;
+  font-weight: 900; font-size: 15px; color: var(--leaf);
+  padding: 0 10px; transition: all 0.15s; margin: 0 4px; border-radius: 4px;
+  touch-action: manipulation;
+}
+.blank-zone.filled     { border-color: var(--correct); background: #e8f5e9; }
+.blank-zone.wrong-fill { border-color: var(--wrong); color: var(--wrong); animation: shake 0.3s; }
+.word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.wb-chip {
+  min-height: 48px; border-radius: 23px;
+  background: var(--sky-light); color: var(--text);
+  font-weight: 900; font-size: 13px; border: 2px solid #90caf9;
+  padding: 7px 16px; cursor: pointer; transition: all 0.14s;
+  touch-action: manipulation;
+}
+.wb-chip:active { transform: scale(0.88); }
+.wb-chip.selected { background: var(--selected); border-color: var(--selected); color: white; transform: scale(1.08); }
+.wb-chip.used     { opacity: 0.22; pointer-events: none; }
+
+/* ── WORD SCRAMBLE ── */
+.scramble-wrap { width: 100%; max-width: 660px; }
+.scramble-q {
+  background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 16px 20px; margin-bottom: 12px; border-top: 4px solid var(--flower);
+}
+.scramble-word {
+  font-family: 'Baloo 2', cursive; font-size: clamp(22px,4vw,36px);
+  color: var(--flower); font-weight: 800; letter-spacing: 4px;
+  text-align: center; margin: 8px 0 4px;
+}
+.scramble-hint { font-size: 13px; color: #888; text-align: center; margin-bottom: 12px; font-style: italic; }
+.scramble-opts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.scr-opt {
+  min-height: 50px; min-width: 120px; border-radius: 25px;
+  border: 3px solid #e0e0e0; background: #fafafa;
+  font-weight: 900; font-size: 14px; cursor: pointer; padding: 8px 18px;
+  transition: all 0.13s;
+  touch-action: manipulation;
+}
+.scr-opt:active { transform: scale(0.90); }
+.scr-opt.correct { background: #e8f5e9; border-color: var(--correct); color: var(--correct); }
+.scr-opt.wrong   { background: #ffebee; border-color: var(--wrong);   color: var(--wrong); }
+
+/* ── FOSSIL ACTIVITY ── */
+.fossil-wrap { width: 100%; max-width: 680px; }
+.fossil-img {
+  width: 100%; max-width: 220px; border-radius: var(--radius);
+  box-shadow: var(--shadow); margin: 0 auto 14px;
+  background: #f5f5f0; aspect-ratio: 1/1;
+  display: flex; align-items: center; justify-content: center; font-size: 80px;
+}
+.child-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.child-card {
+  background: white; border-radius: 16px; box-shadow: var(--shadow-sm);
+  padding: 14px; border: 3px solid #e0e0e0;
+}
+.child-name  { font-weight: 900; font-size: 13px; color: var(--leaf); margin-bottom: 5px; }
+.child-says  { font-size: 13px; line-height: 1.45; color: var(--text); margin-bottom: 10px; font-style: italic; }
+.rw-btns     { display: flex; gap: 8px; }
+.rw-btn {
+  flex: 1; min-height: 48px; border-radius: 12px;
+  border: 2px solid #ddd; background: #fafafa;
+  font-weight: 900; font-size: 13px; cursor: pointer; transition: all 0.13s;
+  touch-action: manipulation;
+}
+.rw-btn:active { transform: scale(0.88); }
+.rw-btn.right-sel { background: #e8f5e9; border-color: var(--correct); color: var(--correct); }
+.rw-btn.wrong-sel { background: #ffebee; border-color: var(--wrong);   color: var(--wrong); }
+.rw-result { margin-top: 6px; font-size: 12px; font-weight: 800; text-align: center; min-height: 16px; }
+.rw-result.ok  { color: var(--correct); }
+.rw-result.bad { color: var(--wrong); }
+
+/* ── EXPERIMENT ── */
+.exp-card {
+  background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 18px 22px; width: 100%; max-width: 700px;
+  border: 2px solid var(--leaf-light); margin-bottom: 14px;
+}
+.exp-card h3 { font-family: 'Baloo 2', cursive; font-size: 18px; color: var(--leaf); margin-bottom: 12px; font-weight: 800; }
+.exp-step { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #c8e6c9; }
+.exp-step:last-child { border-bottom: none; }
+.step-num {
+  min-width: 36px; height: 36px; border-radius: 50%;
+  background: var(--leaf); color: white;
+  font-weight: 900; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.step-text { font-size: clamp(13px,1.8vw,15px); line-height: 1.55; padding-top: 6px; }
+
+/* ── TRUE/FALSE ── */
+.tf-pair { display: flex; gap: 10px; margin-top: 10px; }
+.tf-btn {
+  flex: 1; min-height: 58px; border-radius: 14px; border: 3px solid #ddd;
+  background: white; font-weight: 900; font-size: 16px;
+  cursor: pointer; transition: all 0.14s; font-family: 'Nunito', sans-serif;
+  touch-action: manipulation;
+}
+.tf-btn:active { transform: scale(0.92); }
+.tf-btn.correct { background: #e8f5e9; border-color: var(--correct); color: var(--correct); }
+.tf-btn.wrong   { background: #ffebee; border-color: var(--wrong);   color: var(--wrong); }
+
+/* ── AWARD ── */
+.award-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 24px 20px; text-align: center;
+  width: 100%; max-width: 600px;
+}
+.award-emoji { font-size: 5em; animation: bounce 0.9s infinite alternate; }
+@keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-18px); } }
+.award-title {
+  font-family: 'Baloo 2', cursive; font-size: clamp(26px,5vw,44px);
+  color: var(--leaf); font-weight: 800; margin: 12px 0 8px;
+}
+.award-sub   { font-size: 16px; color: #555; max-width: 420px; line-height: 1.6; }
+.stars       { font-size: 2.6em; letter-spacing: 6px; margin-top: 12px; }
+.award-score-big { font-family: 'Baloo 2', cursive; font-size: clamp(28px,5vw,46px); color: var(--gold); font-weight: 900; margin-top: 8px; }
+
+/* ── SNACKBAR ── */
+#snackbar {
+  position: fixed; bottom: 76px; left: 50%;
+  transform: translateX(-50%) translateY(50px);
+  background: var(--leaf); color: white;
+  padding: 11px 24px; border-radius: 30px;
+  font-weight: 900; font-size: 15px;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+  opacity: 0; z-index: 200; pointer-events: none; white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.28);
+}
+#snackbar.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+#snackbar.snack-wrong { background: var(--wrong); }
+
+/* ── CONFETTI ── */
+#confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 150; display: none; }
+
+/* ── ANIMATIONS ── */
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-8px); }
+  75%      { transform: translateX(8px); }
+}
+
+@media (max-width:480px) {
+  .options-grid  { grid-template-columns: 1fr; }
+  .match-wrap    { grid-template-columns: 1fr; }
+  .child-cards   { grid-template-columns: 1fr; }
+  .sort-zones    { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div id="topbar-left">
+    <button id="menu-btn" onclick="toggleMenu()">☰</button>
+    <span class="unit-badge">Unit 1 🌿</span>
+  </div>
+  <h1>Plants Are Living Things</h1>
+  <div id="topbar-right">
+    <div class="score-badge">⭐ <span class="score-num" id="score-val">0</span></div>
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  </div>
+</div>
+
+<!-- MENU DRAWER -->
+<div id="overlay" onclick="toggleMenu()"></div>
+<div id="slide-menu">
+  <h2>Slides <button id="menu-close" onclick="toggleMenu()">✕</button></h2>
+  <div id="menu-list"></div>
+</div>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- SLIDES -->
+<div id="slide-area">
+
+  <!-- 0: What Is Alive? -->
+  <div class="slide active" id="slide-0">
+    <div class="slide-title">🔍 What Makes Something Alive?</div>
+    <div class="slide-subtitle">Life Processes – tap each card to explore</div>
+    <div class="info-card" style="max-width:720px">
+      <h3>🌿 A living thing does ALL of these 7 things:</h3>
+      <div class="needs-grid" id="life-processes-grid"></div>
+    </div>
+    <div class="info-card" style="max-width:720px">
+      <h3>⚠️ Important!</h3>
+      <p>Something that <span class="highlight">was once alive but is now dead</span> used to do all these things.<br>
+      A fossil is the remains of something that was once alive – it is <span class="highlight-r">not currently alive</span>.</p>
+    </div>
+  </div>
+
+  <!-- 1: Sort Alive / Not Alive -->
+  <div class="slide" id="slide-1">
+    <div class="slide-title">🎮 Sort It! Alive or Not Alive?</div>
+    <div class="slide-subtitle">Tap an item to select it, then tap the correct box</div>
+    <div class="sort-container">
+      <div class="sort-instruction">👆 Tap to select → then tap <b>Alive</b> or <b>Not Alive</b></div>
+      <div class="sort-items-row" id="sort-items"></div>
+      <div class="sort-zones">
+        <div class="sort-zone zone-alive" id="zone-alive">
+          <h4>🌱 Alive</h4>
+          <div class="placed-items" id="placed-alive"></div>
+        </div>
+        <div class="sort-zone zone-not" id="zone-not">
+          <h4>⛔ Not Alive</h4>
+          <div class="placed-items" id="placed-not"></div>
+        </div>
+      </div>
+      <div class="sort-result" id="sort-result"></div>
+    </div>
+  </div>
+
+  <!-- 2: Fossil Activity -->
+  <div class="slide" id="slide-2">
+    <div class="slide-title">🦕 Was It Ever Alive?</div>
+    <div class="slide-subtitle">Look at the fossil – who is right? Tap Right or Wrong for each child</div>
+    <div class="fossil-wrap">
+      <div class="fossil-img">🐚</div>
+      <p style="text-align:center;font-size:13px;color:#888;margin-bottom:12px;font-style:italic">An ammonite fossil found in rock</p>
+      <div class="child-cards" id="fossil-cards"></div>
+      <div id="fossil-result" style="text-align:center;margin-top:14px;font-size:16px;font-weight:900;color:var(--leaf);min-height:24px"></div>
+    </div>
+  </div>
+
+  <!-- 3: Key Vocabulary -->
+  <div class="slide" id="slide-3">
+    <div class="slide-title">📖 Key Vocabulary</div>
+    <div class="slide-subtitle">Tap each card to reveal its definition</div>
+    <div class="vocab-grid" id="vocab-grid"></div>
+  </div>
+
+  <!-- 4: Fill in the Blanks -->
+  <div class="slide" id="slide-4">
+    <div class="slide-title">✏️ Fill in the Blanks</div>
+    <div class="slide-subtitle">Tap a word from the bank, then tap the blank</div>
+    <div class="fill-wrap" id="fill-wrap"></div>
+  </div>
+
+  <!-- 5: Word Scramble -->
+  <div class="slide" id="slide-5">
+    <div class="slide-title">🔀 Word Scramble!</div>
+    <div class="slide-subtitle">The letters are mixed up – can you find the right word?</div>
+    <div class="scramble-wrap" id="scramble-wrap"></div>
+  </div>
+
+  <!-- 6: Label the Plant -->
+  <div class="slide" id="slide-6">
+    <div class="slide-title">🌸 Label the Plant</div>
+    <div class="slide-subtitle">Tap a label, then tap the correct spot on the plant</div>
+    <div style="width:100%;max-width:660px;display:flex;flex-direction:column;align-items:center">
+      <div class="plant-label-wrap" style="width:100%;max-width:320px;position:relative">
+        <div class="plant-svg-container">
+          <svg viewBox="0 0 280 370" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="140" cy="278" rx="95" ry="11" fill="#a1887f" opacity="0.30"/>
+            <rect x="45" y="272" width="190" height="7" rx="3.5" fill="#8d6e63" opacity="0.35"/>
+            <path d="M135 272 Q108 298 88 334" stroke="#795548" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <path d="M137 276 Q128 305 118 340" stroke="#6d4c41" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <path d="M143 272 Q162 300 182 332" stroke="#795548" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <path d="M141 277 Q154 308 164 343" stroke="#6d4c41" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M140 265 Q138 214 140 135" stroke="#558b2f" stroke-width="11" stroke-linecap="round" fill="none"/>
+            <ellipse cx="95" cy="204" rx="48" ry="21" fill="#66bb6a" transform="rotate(-28 95 204)"/>
+            <path d="M140 202 L95 204" stroke="#388e3c" stroke-width="2.5"/>
+            <ellipse cx="185" cy="190" rx="46" ry="19" fill="#81c784" transform="rotate(22 185 190)"/>
+            <path d="M140 190 L185 190" stroke="#388e3c" stroke-width="2.5"/>
+            <ellipse cx="88" cy="158" rx="40" ry="17" fill="#4caf50" transform="rotate(-18 88 158)"/>
+            <path d="M140 160 L88 158" stroke="#388e3c" stroke-width="2"/>
+            <ellipse cx="130" cy="94"  rx="13" ry="19" fill="#f48fb1" opacity="0.9"/>
+            <ellipse cx="150" cy="94"  rx="13" ry="19" fill="#f48fb1" opacity="0.9"/>
+            <ellipse cx="120" cy="107" rx="19" ry="11" fill="#f06292" opacity="0.9"/>
+            <ellipse cx="160" cy="107" rx="19" ry="11" fill="#f06292" opacity="0.9"/>
+            <circle cx="140" cy="103" r="15" fill="#ffd54f"/>
+            <circle cx="140" cy="103" r="9"  fill="#ff8f00"/>
+            <ellipse cx="163" cy="122" rx="10" ry="14" fill="#f48fb1" opacity="0.75"/>
+            <circle  cx="163" cy="122" r="6"  fill="#ffd54f"/>
+          </svg>
+          <div class="part-hotspot" id="hs-flower" style="left:52%;top:27%">?</div>
+          <div class="part-hotspot" id="hs-leaf"   style="left:30%;top:53%">?</div>
+          <div class="part-hotspot" id="hs-stem"   style="left:58%;top:65%">?</div>
+          <div class="part-hotspot" id="hs-roots"  style="left:55%;top:83%">?</div>
+        </div>
+      </div>
+      <div class="label-targets" id="label-targets"></div>
+      <div id="label-result" style="font-size:16px;font-weight:900;margin-top:10px;color:var(--leaf);text-align:center"></div>
+    </div>
+  </div>
+
+  <!-- 7: Plant Parts Jobs -->
+  <div class="slide" id="slide-7">
+    <div class="slide-title">🌿 What Each Part Does</div>
+    <div class="slide-subtitle">The job of each plant part</div>
+    <div class="parts-table" id="parts-table"></div>
+  </div>
+
+  <!-- 8: What Plants Need -->
+  <div class="slide" id="slide-8">
+    <div class="slide-title">💧 What Do Plants Need?</div>
+    <div class="slide-subtitle">Info + Quiz</div>
+    <div class="info-card" style="max-width:720px">
+      <h3>🌿 Plants need these 3 things to grow:</h3>
+      <p style="font-size:1.4em;margin:10px 0 8px;text-align:center">☀️ <b>Sunlight</b> &nbsp;·&nbsp; 💧 <b>Water</b> &nbsp;·&nbsp; 🌡️ <b>Warmth</b></p>
+      <p>Roots <span class="highlight">absorb</span> water from the soil.<br>
+      Without enough water, a plant will <span class="highlight">wilt</span> (droop and go limp).<br>
+      Plants make their own food using sunlight – this is called <span class="highlight">photosynthesis</span>.</p>
+    </div>
+    <div class="quiz-wrap" id="quiz-needs"></div>
+  </div>
+
+  <!-- 9: Match the Word -->
+  <div class="slide" id="slide-9">
+    <div class="slide-title">🔗 Match the Word</div>
+    <div class="slide-subtitle">Tap a word, then tap its meaning</div>
+    <div class="match-wrap">
+      <div class="match-col"><h4>📝 Words</h4><div id="match-words"></div></div>
+      <div class="match-col"><h4>💡 Meanings</h4><div id="match-defs"></div></div>
+    </div>
+    <div id="match-result" style="margin-top:14px;font-size:16px;font-weight:900;text-align:center;color:var(--leaf)"></div>
+  </div>
+
+  <!-- 10: Experiment -->
+  <div class="slide" id="slide-10">
+    <div class="slide-title">🧪 Experiment: Water &amp; Growth</div>
+    <div class="slide-subtitle">Read the experiment, then answer below</div>
+    <div class="exp-card">
+      <h3>Sofia's Experiment</h3>
+      <div class="exp-step"><div class="step-num">1</div><div class="step-text">Sofia planted <b>two identical seeds</b> in identical pots of soil.</div></div>
+      <div class="exp-step"><div class="step-num">2</div><div class="step-text">She placed both pots in the <b>same sunny spot</b> in the classroom.</div></div>
+      <div class="exp-step"><div class="step-num">3</div><div class="step-text">She watered <b>Plant A</b> every day. Plant B received <b>no water</b>.</div></div>
+      <div class="exp-step"><div class="step-num">4</div><div class="step-text">After 10 days: Plant A was <b>8 cm</b> tall. Plant B was <b>3 cm</b> tall.</div></div>
+      <div class="exp-step"><div class="step-num">5</div><div class="step-text">The variable changed was <b>the amount of water</b>. Everything else stayed the same to make it a <b>fair test</b>.</div></div>
+    </div>
+    <div class="quiz-wrap" id="quiz-exp"></div>
+  </div>
+
+  <!-- 11: True or False -->
+  <div class="slide" id="slide-11">
+    <div class="slide-title">✅ True or False?</div>
+    <div class="slide-subtitle">Tap TRUE or FALSE for each statement</div>
+    <div class="quiz-wrap" id="quiz-tf"></div>
+  </div>
+
+  <!-- 12: End-of-Unit Test -->
+  <div class="slide" id="slide-12">
+    <div class="slide-title">📝 Test Practice</div>
+    <div class="slide-subtitle">Mixed questions from all topics</div>
+    <div class="quiz-wrap" id="quiz-final"></div>
+  </div>
+
+  <!-- 13: Award -->
+  <div class="slide" id="slide-13">
+    <div class="award-wrap">
+      <div class="award-emoji">🏆</div>
+      <div class="award-title">Well Done, Plant Scientist!</div>
+      <div class="award-sub">You've completed the full Unit 1 review – life processes, plant parts, vocabulary, experiments, fossils, and more!</div>
+      <div class="stars" id="award-stars">⭐⭐⭐</div>
+      <div class="award-score-big"><span id="final-score">0</span> pts</div>
+      <button class="nav-btn" style="margin-top:20px;background:linear-gradient(135deg,#d81b60,#e91e8c);color:white;min-width:170px;box-shadow:0 5px 18px rgba(216,27,96,0.4)"
+        ontouchstart="event.preventDefault();restartApp()" onclick="restartApp()">🔄 Start Again</button>
+    </div>
+  </div>
+
+</div><!-- end slide-area -->
+
+<!-- BOTTOM NAV -->
+<div id="bottomnav">
+  <button class="nav-btn" id="btn-prev"
+    ontouchstart="event.preventDefault();navigate(-1)" onclick="navigate(-1)">◀ Back</button>
+  <div id="slide-counter">1 / 14</div>
+  <button class="nav-btn" id="btn-next"
+    ontouchstart="event.preventDefault();navigate(1)" onclick="navigate(1)">Next ▶</button>
+</div>
+
+<div id="snackbar"></div>
+
+<script>
+/* ============================================================ DATA ============================================================ */
+const TOTAL_SLIDES = 14;
+let currentSlide = 0;
+let score = 0;
+
+const SLIDE_TITLES = [
+  "🔍 What Is Alive?","🎮 Sort: Alive?","🦕 Fossil Activity",
+  "📖 Key Vocabulary","✏️ Fill in Blanks","🔀 Word Scramble",
+  "🌸 Label the Plant","📋 Plant Parts Jobs","💧 What Plants Need",
+  "🔗 Match the Word","🧪 Experiment","✅ True or False",
+  "📝 Test Practice","🏆 Award"
+];
+
+const lifeProcesses = [
+  {emoji:"🌱",label:"Grows"},
+  {emoji:"💧",label:"Needs Water"},
+  {emoji:"🌬️",label:"Needs Air"},
+  {emoji:"🍎",label:"Needs Food"},
+  {emoji:"👶",label:"Has Young"},
+  {emoji:"♻️",label:"Makes Waste"},
+  {emoji:"👀",label:"Senses World"},
+];
+
+const sortItems = [
+  {id:"s1", emoji:"🐦", label:"Bird",   alive:true},
+  {id:"s2", emoji:"🌹", label:"Rose",   alive:true},
+  {id:"s3", emoji:"🐟", label:"Fish",   alive:true},
+  {id:"s4", emoji:"🦅", label:"Eagle",  alive:true},
+  {id:"s5", emoji:"🌵", label:"Cactus", alive:true},
+  {id:"s6", emoji:"🪨", label:"Rock",   alive:false},
+  {id:"s7", emoji:"🕯️", label:"Candle", alive:false},
+  {id:"s8", emoji:"🚗", label:"Car",    alive:false},
+  {id:"s9", emoji:"☀️", label:"Sun",    alive:false},
+  {id:"s10",emoji:"🔪", label:"Knife",  alive:false},
+];
+
+const fossilKids = [
+  {name:"Kali",  says:"It's not a fossil – it's a real shell of an animal that lived long ago.", correct:false},
+  {name:"Fatima",says:"It's a fossil, so it is made of rock. It was never alive.",               correct:false},
+  {name:"Carl",  says:"I think it is still alive.",                                              correct:false},
+  {name:"Lu",    says:"It was alive but now it is dead.",                                        correct:true},
+];
+
+const vocabWords = [
+  {emoji:"🌸",word:"flower",        def:"The colourful part of a plant that makes seeds"},
+  {emoji:"💀",word:"dead",          def:"No longer living; does not move, eat or make waste"},
+  {emoji:"🧽",word:"absorb",        def:"To soak up or take in a liquid"},
+  {emoji:"🌬️",word:"oxygen",        def:"A gas in the air that living things need to breathe"},
+  {emoji:"🌱",word:"seeds",         def:"The part of a plant that grows into a new plant"},
+  {emoji:"♻️",word:"waste products",def:"Substances produced by living things that they don't need"},
+  {emoji:"🥀",word:"wilt",          def:"To droop or go limp when a plant lacks water"},
+  {emoji:"☠️",word:"poisonous",     def:"Harmful or deadly if touched or eaten"},
+];
+
+const fillQuestions = [
+  {sentence:"This plant has a ___.",                          answer:"flower",        bank:["flower","roots","stem","seeds"]},
+  {sentence:"The cloth will ___ water.",                     answer:"absorb",        bank:["absorb","wilt","grow","dry"]},
+  {sentence:"Plants will grow from the ___.",                answer:"seeds",         bank:["seeds","leaves","flowers","roots"]},
+  {sentence:"A plant will ___ if there is not enough water.",answer:"wilt",          bank:["wilt","grow","flower","absorb"]},
+  {sentence:"Living things all make ___.",                   answer:"waste products",bank:["waste products","oxygen","seeds","food"]},
+  {sentence:"Some plants are ___ to people.",                answer:"poisonous",     bank:["poisonous","helpful","dead","alive"]},
+];
+
+const scrambleQuestions = [
+  {scrambled:"BSORBA",    answer:"ABSORB",   hint:"To soak up a liquid",          opts:["ABSORB","BLOSSOM","SPROUT","BRANCH"]},
+  {scrambled:"TILW",      answer:"WILT",     hint:"What a plant does without water",opts:["WILT","GROW","BLOOM","SHED"]},
+  {scrambled:"EDSSI",     answer:"SEEDS",    hint:"Grow into new plants",          opts:["SEEDS","ROOTS","STEMS","BUDS"]},
+  {scrambled:"REWOLF",    answer:"FLOWER",   hint:"Makes seeds",                   opts:["FLOWER","LEAVES","STEM","ROOT"]},
+  {scrambled:"NEGYOX",    answer:"OXYGEN",   hint:"Gas we breathe",                opts:["OXYGEN","CARBON","POLLEN","NECTAR"]},
+  {scrambled:"NOOSIUPOS", answer:"POISONOUS",hint:"Harmful if eaten",              opts:["POISONOUS","BEAUTIFUL","COLOURFUL","DANGEROUS"]},
+];
+
+const plantPartsData = [
+  {icon:"🌸",part:"Flower",job:"Makes seeds so new plants can grow. Attracts insects for pollination.",         color:"#fce4ec"},
+  {icon:"🍃",part:"Leaf",  job:"Makes food for the plant using sunlight, water and air (photosynthesis).",      color:"#e8f5e9"},
+  {icon:"🌿",part:"Stem",  job:"Holds the plant upright and carries water and food between roots and leaves.",  color:"#f1f8e9"},
+  {icon:"🌱",part:"Roots", job:"Anchor the plant in the soil and absorb water and minerals.",                   color:"#efebe9"},
+];
+
+const matchPairs = [
+  {word:"absorb",        def:"Soak up liquid"},
+  {word:"wilt",          def:"Droop from lack of water"},
+  {word:"oxygen",        def:"Gas animals breathe in"},
+  {word:"poisonous",     def:"Harmful if eaten"},
+  {word:"seeds",         def:"Grow into new plants"},
+  {word:"roots",         def:"Take up water from soil"},
+];
+
+const quizNeeds = [
+  {q:"What THREE things does a plant need to grow?",      opts:["Water, sunlight, warmth","Water, darkness, cold","Only sunlight","Soil, ice, darkness"],    ans:0,emoji:"🌱"},
+  {q:"What do roots do for a plant?",                    opts:["Make food using sunlight","Absorb water from soil","Make oxygen","Produce seeds"],            ans:1,emoji:"🌿"},
+  {q:"A plant will ___ if it has no water.",             opts:["grow faster","flower","wilt","produce seeds"],                                               ans:2,emoji:"💧"},
+  {q:"Which part of a plant makes seeds?",               opts:["Leaf","Stem","Roots","Flower"],                                                              ans:3,emoji:"🌸"},
+];
+
+const quizExp = [
+  {q:"What variable did Sofia change in her experiment?",    opts:["Amount of sunlight","Amount of soil","Amount of water","Type of seed"],               ans:2,emoji:"🔬"},
+  {q:"How tall was Plant A (with water) after 10 days?",     opts:["3 cm","4 cm","8 cm","10 cm"],                                                          ans:2,emoji:"📏"},
+  {q:"Why did both pots go in the same sunny spot?",         opts:["To keep the test fair","To save space","Sunlight doesn't matter","The teacher said so"],ans:0,emoji:"☀️"},
+  {q:"What conclusion can you draw from the experiment?",    opts:["Cold helps plants grow","Water helps plants grow","Darkness helps plants grow","Soil is not needed"],ans:1,emoji:"✅"},
+];
+
+const quizTF = [
+  {q:"All living things need water.",                     ans:true},
+  {q:"A rock is alive because it is hard.",              ans:false},
+  {q:"Plants make their own food using sunlight.",       ans:true},
+  {q:"A dead fish was never alive.",                     ans:false},
+  {q:"Roots absorb water from the soil.",                ans:true},
+  {q:"Plants do not make waste products.",               ans:false},
+  {q:"Seeds grow into new plants.",                      ans:true},
+  {q:"A fossil is a currently living animal.",           ans:false},
+  {q:"Without water, a plant will wilt.",                ans:true},
+  {q:"Oxygen is a gas that helps living things breathe.",ans:true},
+];
+
+const quizFinal = [
+  {q:"Palm trees and seeds – which are ALIVE?",                    opts:["Palm tree only","Seeds only","Both are alive","Neither"],                            ans:2,emoji:"🌴"},
+  {q:"A cola bottle is NOT alive because…",                        opts:["It is made of plastic","It doesn't grow, move or have young","It is cold","It has liquid inside"],ans:1,emoji:"🥤"},
+  {q:"Which THREE things does a plant need?",                      opts:["Water, sunlight, warmth","Ice, darkness, fire","Soil, plastic, metal","Sand, cold, clouds"],ans:0,emoji:"🌿"},
+  {q:"In Sofia's experiment, Plant B had NO water. How tall after 10 days?",opts:["8 cm","5 cm","3 cm","0 cm"],                                               ans:2,emoji:"📊"},
+  {q:"What happens to a plant that does NOT get enough water?",    opts:["Grows faster","Produces more flowers","Wilts","Makes more seeds"],                   ans:2,emoji:"🥀"},
+  {q:"Which of these is NOT a life process?",                      opts:["Growing","Needing water","Being made of metal","Making waste"],                      ans:2,emoji:"🤔"},
+];
+
+/* ============================================================ STATE ============================================================ */
+let sortSelected=null, sortPlacements={};
+let labelSelected=null, labelPlacements={};
+let matchWordSelected=null, matchCompleted=new Set();
+let fillSelected=null, fillAnswers={};
+let quizAnswered={}, fossilAnswered={}, scrambleAnswered={};
+
+/* ============================================================ INIT ============================================================ */
+function init(){
+  buildLifeProcesses();
+  buildSortGame();
+  buildFossilActivity();
+  buildVocabGrid();
+  buildFillGame();
+  buildScramble();
+  buildPlantLabel();
+  buildPartsTable();
+  buildQuiz('quiz-needs',quizNeeds,'needs');
+  buildMatchGame();
+  buildQuiz('quiz-exp',quizExp,'exp');
+  buildTrueFalse();
+  buildQuiz('quiz-final',quizFinal,'final');
+  buildSlideMenu();
+  updateNav();
+}
+
+/* ── LIFE PROCESSES ── */
+function buildLifeProcesses(){
+  const g=document.getElementById('life-processes-grid');
+  lifeProcesses.forEach(p=>{
+    const c=document.createElement('div');
+    c.className='need-card need-yes';
+    c.innerHTML=`<span class="n-emoji">${p.emoji}</span><span class="n-label">${p.label}</span>`;
+    g.appendChild(c);
+  });
+}
+
+/* ── SORT GAME ── */
+function buildSortGame(){
+  const row=document.getElementById('sort-items');
+  sortItems.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='sort-item'; el.id='sort-'+item.id;
+    el.innerHTML=`<span style="font-size:1.9em">${item.emoji}</span><span class="lbl">${item.label}</span>`;
+    const h=()=>handleSortItemTap(item.id,el);
+    el.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    el.addEventListener('click',h);
+    row.appendChild(el);
+  });
+  ['alive','not'].forEach(zone=>{
+    const el=document.getElementById('zone-'+zone);
+    const h=()=>handleZoneTap(zone);
+    el.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    el.addEventListener('click',h);
+  });
+}
+
+function handleSortItemTap(id,el){
+  if(sortPlacements[id]) return;
+  if(sortSelected===id){
+    sortSelected=null; el.classList.remove('selected'); return;
+  }
+  if(sortSelected){
+    const p=document.getElementById('sort-'+sortSelected);
+    if(p) p.classList.remove('selected');
+  }
+  el.classList.add('selected'); sortSelected=id;
+}
+
+function handleZoneTap(zone){
+  if(!sortSelected) return;
+  const item=sortItems.find(i=>i.id===sortSelected);
+  if(!item) return;
+  const correct=item.alive?'alive':'not';
+  const isOk=zone===correct;
+  sortPlacements[sortSelected]={zone,ok:isOk};
+
+  const chip=document.createElement('div');
+  chip.className='placed-chip '+(isOk?(item.alive?'alive-chip':'not-chip'):'wrong-placed');
+  chip.innerHTML=item.emoji+' '+item.label+(isOk?'':' ❌');
+  const sid=sortSelected;
+  const ch=()=>{
+    delete sortPlacements[sid]; chip.remove();
+    const orig=document.getElementById('sort-'+sid);
+    if(orig) orig.classList.remove('placed','selected');
+    document.getElementById('sort-result').textContent='';
+  };
+  chip.addEventListener('touchstart',e=>{e.preventDefault();ch();},{passive:false});
+  chip.addEventListener('click',ch);
+  document.getElementById('placed-'+zone).appendChild(chip);
+
+  const orig=document.getElementById('sort-'+sortSelected);
+  if(orig){orig.classList.remove('selected');orig.classList.add('placed');}
+  sortSelected=null;
+
+  if(isOk){addScore(5);snack('✅ Correct! +5 pts');}
+  else     {snack('❌ Check again!',true);}
+  checkSortComplete();
+}
+
+function checkSortComplete(){
+  const total=sortItems.length;
+  if(Object.keys(sortPlacements).length<total) return;
+  const ok=Object.values(sortPlacements).filter(v=>v.ok).length;
+  const res=document.getElementById('sort-result');
+  res.textContent=`You got ${ok}/${total} correct! 🌟`;
+  res.style.color=ok===total?'var(--correct)':'var(--wrong)';
+  if(ok===total) launchConfetti();
+}
+
+/* ── FOSSIL ── */
+function buildFossilActivity(){
+  const c=document.getElementById('fossil-cards');
+  fossilKids.forEach((k,ki)=>{
+    const card=document.createElement('div');
+    card.className='child-card';
+    card.innerHTML=`
+      <div class="child-name">👦 ${k.name}</div>
+      <div class="child-says">"${k.says}"</div>
+      <div class="rw-btns">
+        <button class="rw-btn" id="fw-${ki}-r"
+          ontouchstart="event.preventDefault();handleFossil(${ki},true)"
+          onclick="handleFossil(${ki},true)">✅ Right</button>
+        <button class="rw-btn" id="fw-${ki}-w"
+          ontouchstart="event.preventDefault();handleFossil(${ki},false)"
+          onclick="handleFossil(${ki},false)">❌ Wrong</button>
+      </div>
+      <div class="rw-result" id="fr-${ki}"></div>`;
+    c.appendChild(card);
+  });
+}
+
+function handleFossil(ki,choseRight){
+  if(fossilAnswered[ki]) return;
+  fossilAnswered[ki]=true;
+  const kid=fossilKids[ki];
+  const ok=choseRight===kid.correct;
+  const rb=document.getElementById('fw-'+ki+'-r');
+  const wb=document.getElementById('fw-'+ki+'-w');
+  const fb=document.getElementById('fr-'+ki);
+  rb.disabled=true; wb.disabled=true;
+  if(ok){
+    (choseRight?rb:wb).classList.add('right-sel');
+    fb.textContent='✅ Correct!'; fb.className='rw-result ok';
+    addScore(8);
+  } else {
+    (choseRight?rb:wb).classList.add('wrong-sel');
+    (kid.correct?rb:wb).classList.add('right-sel');
+    fb.textContent='❌ The answer is '+(kid.correct?'Right':'Wrong');
+    fb.className='rw-result bad';
+  }
+  if(Object.keys(fossilAnswered).length===fossilKids.length){
+    document.getElementById('fossil-result').textContent='🎉 Only Lu is correct! The fossil was once alive.';
+  }
+}
+
+/* ── VOCAB ── */
+function buildVocabGrid(){
+  const g=document.getElementById('vocab-grid');
+  vocabWords.forEach(v=>{
+    const c=document.createElement('div');
+    c.className='vocab-card';
+    c.innerHTML=`<span class="v-emoji">${v.emoji}</span><div class="v-word">${v.word}</div><div class="v-def">${v.def}</div>`;
+    const h=()=>{c.classList.toggle('flipped');if(c.classList.contains('flipped'))addScore(2);};
+    c.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    c.addEventListener('click',h);
+    g.appendChild(c);
+  });
+}
+
+/* ── FILL IN BLANK ── */
+function buildFillGame(){
+  const wrap=document.getElementById('fill-wrap');
+  fillQuestions.forEach((fq,qi)=>{
+    const div=document.createElement('div'); div.className='fill-q';
+    const parts=fq.sentence.split('___');
+    const bankHTML=fq.bank.map((w,wi)=>
+      `<button class="wb-chip" id="wbc-${qi}-${wi}" data-qi="${qi}" data-wi="${wi}" data-word="${w}">${w}</button>`
+    ).join('');
+    div.innerHTML=`
+      <div class="fill-sentence">
+        ${qi+1}. ${parts[0]}<span class="blank-zone" id="blank-${qi}" data-qi="${qi}">_____</span>${parts[1]||''}
+      </div>
+      <div class="word-bank">${bankHTML}</div>`;
+    wrap.appendChild(div);
+  });
+  document.querySelectorAll('.wb-chip').forEach(btn=>{
+    const h=()=>handleWBChip(btn);
+    btn.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    btn.addEventListener('click',h);
+  });
+  document.querySelectorAll('.blank-zone').forEach(blank=>{
+    const h=()=>handleBlankTap(blank);
+    blank.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    blank.addEventListener('click',h);
+  });
+}
+
+function handleWBChip(btn){
+  const qi=parseInt(btn.dataset.qi);
+  if(btn.classList.contains('used')) return;
+  document.querySelectorAll(`.wb-chip[data-qi="${qi}"]`).forEach(b=>b.classList.remove('selected'));
+  if(fillSelected&&fillSelected.qi===qi&&fillSelected.word===btn.dataset.word){
+    fillSelected=null; return;
+  }
+  btn.classList.add('selected');
+  fillSelected={qi,word:btn.dataset.word,btn};
+}
+
+function handleBlankTap(blank){
+  const qi=parseInt(blank.dataset.qi);
+  if(!fillSelected||fillSelected.qi!==qi) return;
+  if(blank.classList.contains('filled')) return;
+  const word=fillSelected.word;
+  const ok=word===fillQuestions[qi].answer;
+  blank.textContent=word;
+  fillSelected.btn.classList.remove('selected');
+  fillSelected.btn.classList.add('used');
+  fillSelected=null;
+  if(ok){
+    blank.classList.add('filled'); fillAnswers[qi]=word;
+    addScore(8); snack('✅ Correct! +8 pts');
+  } else {
+    blank.classList.add('wrong-fill'); snack('❌ Try again!',true);
+    setTimeout(()=>{
+      blank.textContent='_____'; blank.classList.remove('wrong-fill');
+      document.querySelectorAll(`.wb-chip[data-qi="${qi}"][data-word="${word}"]`)
+        .forEach(b=>b.classList.remove('used'));
+    },900);
+  }
+}
+
+/* ── WORD SCRAMBLE ── */
+function buildScramble(){
+  const wrap=document.getElementById('scramble-wrap');
+  scrambleQuestions.forEach((sq,qi)=>{
+    const div=document.createElement('div'); div.className='scramble-q';
+    div.innerHTML=`
+      <div class="scramble-word" id="sw-${qi}">${sq.scrambled}</div>
+      <div class="scramble-hint">💡 ${sq.hint}</div>
+      <div class="scramble-opts">
+        ${sq.opts.map((o,oi)=>`
+          <button class="scr-opt" id="so-${qi}-${oi}"
+            ontouchstart="event.preventDefault();handleScramble(${qi},${oi},'${o}')"
+            onclick="handleScramble(${qi},${oi},'${o}')">${o}</button>`).join('')}
+      </div>
+      <div class="q-feedback" id="sf-${qi}"></div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function handleScramble(qi,oi,chosen){
+  if(scrambleAnswered[qi]) return;
+  scrambleAnswered[qi]=true;
+  const sq=scrambleQuestions[qi];
+  const ok=chosen===sq.answer;
+  const fb=document.getElementById('sf-'+qi);
+  scrambleQuestions[qi].opts.forEach((_,i)=>{
+    const b=document.getElementById('so-'+qi+'-'+i); if(b) b.disabled=true;
+  });
+  document.getElementById('so-'+qi+'-'+oi).classList.add(ok?'correct':'wrong');
+  if(ok){
+    fb.textContent='✅ Correct! The word is '+sq.answer; fb.className='q-feedback ok';
+    const w=document.getElementById('sw-'+qi);
+    if(w){w.textContent=sq.answer;w.style.color='var(--correct)';}
+    addScore(8); snack('🌟 Unscrambled! +8 pts');
+  } else {
+    fb.textContent='❌ The answer was '+sq.answer; fb.className='q-feedback bad';
+    snack('❌ Not quite!',true);
+  }
+}
+
+/* ── PLANT LABEL ── */
+const partMap={'hs-flower':'flower','hs-leaf':'leaf','hs-stem':'stem','hs-roots':'roots'};
+function buildPlantLabel(){
+  const tgt=document.getElementById('label-targets');
+  ['flower','leaf','stem','roots'].forEach(word=>{
+    const btn=document.createElement('button');
+    btn.className='label-chip'; btn.id='lbl-'+word;
+    btn.textContent=word.charAt(0).toUpperCase()+word.slice(1);
+    const h=()=>handleLabelChip(word,btn);
+    btn.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    btn.addEventListener('click',h);
+    tgt.appendChild(btn);
+  });
+  Object.keys(partMap).forEach(hsId=>{
+    const hs=document.getElementById(hsId);
+    if(!hs) return;
+    const h=()=>handleHotspotTap(hsId);
+    hs.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    hs.addEventListener('click',h);
+  });
+}
+
+function handleLabelChip(word,btn){
+  document.querySelectorAll('.label-chip').forEach(b=>b.classList.remove('selected'));
+  if(labelSelected===word){labelSelected=null;return;}
+  btn.classList.add('selected'); labelSelected=word;
+}
+
+function handleHotspotTap(hsId){
+  if(!labelSelected) return;
+  const expected=partMap[hsId];
+  const hs=document.getElementById(hsId);
+  if(hs.classList.contains('filled')) return;
+  if(labelSelected===expected){
+    hs.textContent=labelSelected; hs.classList.add('filled','correct-anim');
+    const chip=document.getElementById('lbl-'+labelSelected);
+    if(chip) chip.classList.add('used');
+    labelPlacements[hsId]=labelSelected; labelSelected=null;
+    document.querySelectorAll('.label-chip').forEach(b=>b.classList.remove('selected'));
+    addScore(10); snack('✅ Correct! +10 pts');
+    if(Object.keys(labelPlacements).length===4){
+      document.getElementById('label-result').textContent='🌟 All parts labelled correctly!';
+      launchConfetti();
+    }
+  } else {
+    hs.classList.add('wrong-hs');
+    setTimeout(()=>hs.classList.remove('wrong-hs'),700);
+    snack('❌ Try a different label!',true);
+    document.querySelectorAll('.label-chip').forEach(b=>b.classList.remove('selected'));
+    labelSelected=null;
+  }
+}
+
+/* ── PARTS TABLE ── */
+function buildPartsTable(){
+  const wrap=document.getElementById('parts-table');
+  wrap.innerHTML=plantPartsData.map(p=>`
+    <div class="part-row" style="background:${p.color}">
+      <div class="p-icon">${p.icon}</div>
+      <div><h4>${p.part}</h4><p>${p.job}</p></div>
+    </div>`).join('');
+}
+
+/* ── GENERIC QUIZ ── */
+function buildQuiz(cid,qs,key){
+  const c=document.getElementById(cid); if(!c) return;
+  qs.forEach((q,qi)=>{
+    const div=document.createElement('div'); div.className='quiz-question';
+    const ak=key+'-'+qi;
+    div.innerHTML=`
+      <div class="q-num">Question ${qi+1} of ${qs.length}</div>
+      <div class="q-text"><span class="q-emoji">${q.emoji}</span>${q.q}</div>
+      <div class="options-grid">
+        ${q.opts.map((o,oi)=>`
+          <button class="opt-btn" id="${ak}-opt-${oi}"
+            ontouchstart="event.preventDefault();handleQuizOpt('${ak}',${oi},${q.ans},this)"
+            onclick="handleQuizOpt('${ak}',${oi},${q.ans},this)">
+            ${['A','B','C','D'][oi]}. ${o}</button>`).join('')}
+      </div>
+      <div class="q-feedback" id="${ak}-fb"></div>`;
+    c.appendChild(div);
+  });
+}
+
+function handleQuizOpt(ak,chosen,correct,btn){
+  if(quizAnswered[ak]) return;
+  quizAnswered[ak]=true;
+  const fb=document.getElementById(ak+'-fb');
+  for(let i=0;i<4;i++){const b=document.getElementById(ak+'-opt-'+i);if(b)b.disabled=true;}
+  if(chosen===correct){
+    btn.classList.add('correct');
+    fb.textContent='✅ Correct! Well done!'; fb.className='q-feedback ok';
+    addScore(10); snack('🌟 Correct! +10 pts');
+  } else {
+    btn.classList.add('wrong');
+    const cb=document.getElementById(ak+'-opt-'+correct);
+    if(cb) cb.classList.add('correct');
+    fb.textContent='❌ Not quite. The correct answer is highlighted.'; fb.className='q-feedback bad';
+    snack('❌ Not this time!',true);
+  }
+}
+
+/* ── MATCH ── */
+function buildMatchGame(){
+  const words=document.getElementById('match-words');
+  const defs=document.getElementById('match-defs');
+  const shuffled=[...matchPairs].sort(()=>Math.random()-0.5);
+  matchPairs.forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='match-item'; el.id='mw-'+i;
+    el.textContent=p.word; el.dataset.word=p.word;
+    const h=()=>handleMatchWord(el);
+    el.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    el.addEventListener('click',h);
+    words.appendChild(el);
+  });
+  shuffled.forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='match-item'; el.id='md-'+i;
+    el.textContent=p.def; el.dataset.word=p.word;
+    const h=()=>handleMatchDef(p.word,el);
+    el.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    el.addEventListener('click',h);
+    defs.appendChild(el);
+  });
+}
+
+function handleMatchWord(el){
+  if(el.classList.contains('matched')) return;
+  const w=el.dataset.word;
+  document.querySelectorAll('#match-words .match-item').forEach(e=>e.classList.remove('selected'));
+  if(matchWordSelected===w){matchWordSelected=null;return;}
+  el.classList.add('selected'); matchWordSelected=w;
+}
+
+function handleMatchDef(defWord,defEl){
+  if(!matchWordSelected||defEl.classList.contains('matched')) return;
+  if(matchWordSelected===defWord){
+    defEl.classList.add('matched');
+    document.querySelectorAll('#match-words .match-item').forEach(e=>{
+      if(e.dataset.word===matchWordSelected) e.classList.add('matched');
+    });
+    matchCompleted.add(matchWordSelected); matchWordSelected=null;
+    addScore(8); snack('✅ Matched! +8 pts');
+    if(matchCompleted.size===matchPairs.length){
+      document.getElementById('match-result').textContent='🌟 All matched! Brilliant!';
+      launchConfetti();
+    }
+  } else {
+    defEl.classList.add('wrong-flash');
+    document.querySelectorAll('#match-words .match-item.selected').forEach(e=>e.classList.add('wrong-flash'));
+    setTimeout(()=>{
+      defEl.classList.remove('wrong-flash');
+      document.querySelectorAll('#match-words .match-item').forEach(e=>e.classList.remove('wrong-flash','selected'));
+      matchWordSelected=null;
+    },500);
+    snack('❌ Not a match!',true);
+  }
+}
+
+/* ── TRUE/FALSE ── */
+function buildTrueFalse(){
+  const c=document.getElementById('quiz-tf');
+  quizTF.forEach((q,qi)=>{
+    const div=document.createElement('div'); div.className='quiz-question';
+    div.innerHTML=`
+      <div class="q-num">Question ${qi+1} of ${quizTF.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="tf-pair">
+        <button class="tf-btn" id="tf-${qi}-t"
+          ontouchstart="event.preventDefault();handleTF(${qi},true,this)"
+          onclick="handleTF(${qi},true,this)">✅ TRUE</button>
+        <button class="tf-btn" id="tf-${qi}-f"
+          ontouchstart="event.preventDefault();handleTF(${qi},false,this)"
+          onclick="handleTF(${qi},false,this)">❌ FALSE</button>
+      </div>
+      <div class="q-feedback" id="tf-fb-${qi}"></div>`;
+    c.appendChild(div);
+  });
+}
+
+function handleTF(qi,chosen,btn){
+  const key='tf-'+qi;
+  if(quizAnswered[key]) return;
+  quizAnswered[key]=true;
+  const correct=quizTF[qi].ans;
+  const fb=document.getElementById('tf-fb-'+qi);
+  document.getElementById('tf-'+qi+'-t').disabled=true;
+  document.getElementById('tf-'+qi+'-f').disabled=true;
+  if(chosen===correct){
+    btn.classList.add('correct'); fb.textContent='✅ Correct!'; fb.className='q-feedback ok';
+    addScore(8); snack('🌟 Correct! +8 pts');
+  } else {
+    btn.classList.add('wrong');
+    document.getElementById('tf-'+qi+(correct?'-t':'-f')).classList.add('correct');
+    fb.textContent='❌ The answer is '+(correct?'TRUE':'FALSE')+'.'; fb.className='q-feedback bad';
+    snack('❌ Not quite!',true);
+  }
+}
+
+/* ── SLIDE MENU ── */
+function buildSlideMenu(){
+  const list=document.getElementById('menu-list');
+  SLIDE_TITLES.forEach((title,i)=>{
+    const div=document.createElement('div');
+    div.className='menu-item'+(i===0?' current':''); div.id='mi-'+i;
+    div.innerHTML=`<div class="m-num">${i+1}</div><div class="m-title">${title}</div>`;
+    const h=()=>{goToSlide(i);toggleMenu();};
+    div.addEventListener('touchstart',e=>{e.preventDefault();h();},{passive:false});
+    div.addEventListener('click',h);
+    list.appendChild(div);
+  });
+}
+
+function toggleMenu(){
+  document.getElementById('slide-menu').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+function updateMenuHighlight(){
+  document.querySelectorAll('.menu-item').forEach((el,i)=>el.classList.toggle('current',i===currentSlide));
+}
+
+/* ── NAVIGATION ── */
+function navigate(dir){
+  const next=currentSlide+dir;
+  if(next<0||next>=TOTAL_SLIDES) return;
+  showSlide(next,dir<0);
+}
+
+function goToSlide(n){showSlide(n,false);}
+
+function showSlide(n,back){
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active','slide-back'));
+  const t=document.getElementById('slide-'+n);
+  if(t){t.classList.add('active');if(back)t.classList.add('slide-back');}
+  currentSlide=n;
+  updateNav(); updateProgressBar(); updateMenuHighlight();
+  if(n===TOTAL_SLIDES-1) updateAward();
+}
+
+function updateNav(){
+  document.getElementById('slide-counter').textContent=(currentSlide+1)+' / '+TOTAL_SLIDES;
+  document.getElementById('btn-prev').style.opacity=currentSlide===0?'0.35':'1';
+  const nb=document.getElementById('btn-next');
+  if(currentSlide===TOTAL_SLIDES-1){
+    nb.textContent='🏁 Finish';
+    nb.style.background='linear-gradient(135deg,#d81b60,#e91e8c)';
+  } else {
+    nb.textContent='Next ▶';
+    nb.style.background='linear-gradient(135deg, var(--leaf-mid), var(--leaf))';
+  }
+}
+
+function updateProgressBar(){
+  document.getElementById('progress-bar').style.width=(currentSlide/(TOTAL_SLIDES-1)*100)+'%';
+}
+
+function updateAward(){
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('award-stars').textContent=score>=280?'⭐⭐⭐':score>=140?'⭐⭐':'⭐';
+}
+
+/* ── SWIPE ── */
+let tx=0,ty=0;
+document.getElementById('slide-area').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('slide-area').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>55) navigate(dx<0?1:-1);
+},{passive:true});
+
+/* ── SCORE ── */
+function addScore(pts){
+  score+=pts;
+  const el=document.getElementById('score-val'); el.textContent=score;
+  const badge=el.closest('.score-badge');
+  badge.style.transform='scale(1.28)';
+  setTimeout(()=>badge.style.transform='scale(1)',200);
+}
+
+/* ── SNACK ── */
+let snackTimer=null;
+function snack(msg,isWrong=false){
+  const el=document.getElementById('snackbar');
+  el.textContent=msg; el.className=isWrong?'show snack-wrong':'show';
+  if(snackTimer) clearTimeout(snackTimer);
+  snackTimer=setTimeout(()=>el.classList.remove('show'),1900);
+}
+
+/* ── CONFETTI ── */
+function launchConfetti(){
+  const canvas=document.getElementById('confetti-canvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  canvas.style.display='block';
+  const cols=['#2e7d32','#f9a825','#d81b60','#0288d1','#ff5722','#8bc34a'];
+  const pieces=Array.from({length:80},()=>({
+    x:Math.random()*canvas.width, y:Math.random()*-canvas.height,
+    w:8+Math.random()*10, h:5+Math.random()*8,
+    color:cols[Math.floor(Math.random()*cols.length)],
+    vx:(Math.random()-0.5)*3, vy:2+Math.random()*4,
+    angle:Math.random()*360, spin:(Math.random()-0.5)*6,
+  }));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.angle*Math.PI/180);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+      p.x+=p.vx; p.y+=p.vy; p.angle+=p.spin;
+    });
+    frame++;
+    if(frame<110) requestAnimationFrame(draw);
+    else{canvas.style.display='none';ctx.clearRect(0,0,canvas.width,canvas.height);}
+  }
+  draw();
+}
+
+/* ── RESTART ── */
+function restartApp(){location.reload();}
+
+init();
+</script>
+</body>
+</html>
